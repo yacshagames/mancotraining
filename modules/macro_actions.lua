@@ -1,31 +1,7 @@
+lib = {}
 
---Modo IntiMarqo v1.0
---SF2ce Modo entrenamiento para Fightcade2  
---Desarrollado por : intiMarqo
---06/09/2021
---https://www.youtube.com/channel/UC86un-0H23nsI14ZBXS23EQ
---https://www.twitch.tv/intimarqo
+local action_select = 0
 
-	--> 320x, 240y --cmd
-	--> 384x, 224y --lua
-local v=true	
-local t={}
-local t_juego ={
-			 juego_contador_entrada=0
-			,ind_arena=0X00FF803A
-		}
-local t_color = { 
-		on1  = 0xFF0000FF,
-		on2  = 0x000000FF,
-		off1 = 0xFFFFFFFF,
-		off2 = 0x000000FF
-	}
-
-local K_N = 0x000000FF
-local K_R = 0XFF0000FF
-local K_A = 0X0000FFFF
-local K_B = 0XFFFFFFFF
-	
 local t_jugador={
 	  nro_jugador=2
 	 ,ind_prepara_counter=0
@@ -40,6 +16,8 @@ local t_jugador={
 	 ,ind_contrincante_agachado    =0x00FF83C1
 	 ,ind_char        =0x00FF894F
 }
+
+
 local accion_p2_BC={
               secuenciaConterProgramado= {{"Back"}}
 			 ,secuenciaAtaqueProgramado_indice=1
@@ -55,12 +33,13 @@ local accion_p2_BCA={
 			 ,secuenciaConterProgramado_indice=1
 		     ,secuenciaConvertida      = {}
 		}
-function accion_salta()
+local function accion_salta()
 		t_movimientos = {}
 		t_movimientos["P2 Up"]=true
 		joypad.set(t_movimientos)
 end
-function accion_saltaPatea()
+
+local function accion_saltaPatea()
 	t_movimientos = {}
 	v_indicador_aire= memory.readbyte(t_jugador.ind_aire)
 	v_orientacion   = memory.readbyte(t_jugador.ind_orientacion)
@@ -117,7 +96,7 @@ function accion_patadaAbajoPequena()
 		end 
 end
 
-function accion_patadaAbajoGrande()
+local function accion_patadaAbajoGrande()
 		t_movimientos2 = {}
 		if t_juego.juego_contador_entrada == 0 then
 		t_movimientos2["P2 Down"]=true
@@ -132,7 +111,7 @@ function accion_patadaAbajoGrande()
 		end 
 end
 
-function accion_bloquearComboAbajo()
+local function accion_bloquearComboAbajo()
 	t_movimientos = {}
 	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
 	v_orientacion  = memory.readbyte(t_jugador.ind_orientacion)
@@ -157,7 +136,7 @@ function accion_bloquearComboAbajo()
 		accion_p2_BC.aux_contador_local=accion_p2_BC.aux_contador_local-1
 	end
 end
-t[9]="q"
+--t[9]="q"
 function accion_bloquearComboArriba()
 	t_movimientos = {}
 	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
@@ -181,7 +160,7 @@ function accion_bloquearComboArriba()
 	end
 end
 
-t[8]="r"
+--t[8]="r"
 function accion_bloquearContraAtacar()
 	t_movimientos = {}
 	v_orientacion  = memory.readbyte(t_jugador.ind_orientacion)
@@ -275,249 +254,38 @@ function accion_bloquearContraAtacar()
 	joypad.set(t_movimientos)
 
 end
-t[7]="a"
-function inputdisplay2()
-	local tabla_inp = {}
-	local width,height = emu.screenwidth() ,emu.screenheight()
-	--
-	for n = 1, 2 do
-		tabla_inp[n .. "^"] =  {(n-1)/n*width + 95 , height - 18, "P" .. n .. " Up"}
-		tabla_inp[n .. "v"] =  {(n-1)/n*width + 95 , height - 12, "P" .. n .. " Down"}
-		tabla_inp[n .. "<"] =  {(n-1)/n*width + 89 , height - 15, "P" .. n .. " Left"}
-		tabla_inp[n .. ">"] =  {(n-1)/n*width + 101 , height - 15, "P" .. n .. " Right"}
+
+function lib.MacroActions()
+
+	if action_select == 1 then		
+		accion_bloquearContraAtacar()
+	elseif action_select  == 2 then
 		
-		tabla_inp[n .. "LP"] = {(n-1)/n*width + 55 , height - 19, "P" .. n .. " Weak Punch"}
-		tabla_inp[n .. "MP"] = {(n-1)/n*width + 65, height - 19, "P" .. n .. " Medium Punch"}
-		tabla_inp[n .. "HP"] = {(n-1)/n*width + 75, height - 19, "P" .. n .. " Strong Punch"}
-		
-		tabla_inp[n .. "LK"] = {(n-1)/n*width + 55 , height - 11, "P" .. n .. " Weak Kick"}
-		tabla_inp[n .. "MK"] = {(n-1)/n*width + 65, height - 11, "P" .. n .. " Medium Kick"}
-		tabla_inp[n .. "HK"] = {(n-1)/n*width + 75, height - 11, "P" .. n .. " Strong Kick"}
-			
-	end
+	elseif action_select  == 3 then
 	
-	for k,v in pairs(tabla_inp) do
-		local color1,color2 = t_color.on1,t_color.on2
-		if joypad.get()[v[3]] == false  then
-			color1,color2 = t_color.off1,t_color.off2
-		end
-		gui.text(v[1], v[2], string.sub(k, 2), color1, color2)
 	end
-	
 end
 
-function energiaInfinita()
-   valor_minimo_permitido=35
-   
-   if memory.readbyte(0x00FF83E9)<=valor_minimo_permitido then 
-		memory.writebyte(0x00FF83E9,144)
-		memory.writebyte(0x00FF857B,144)
-   end
 
-   if memory.readbyte(0x00FF86E9)<=valor_minimo_permitido then 
-		memory.writebyte(0x00FF86E9,144)
-		memory.writebyte(0x00FF887B,144)
-   end
-end
-t[6]="t"
-function tiempoInfinito()
-	if(  memory.readbyte(0xFF8ABE)<153) then
-		 memory.writebyte(0xFF8ABE,153) 
-    end
-end 
+----------------------------------------------------------------------------------------------------
+-- hotkey function
+----------------------------------------------------------------------------------------------------
+function lib.EnableMacroActions()
+	action_select = action_select + 1
 
-function mareo() 
-   valor_maximo_permitido=1
-   if memory.readbyte(t_jugador.ind_mareo)>valor_maximo_permitido then 
-		memory.writebyte(t_jugador.ind_mareo,0)
-   end
-end
-t[5]="n"
-
-local menuActivo=false
-local contadordeentradas=0
-function menuHabilitar()
-	local inp = joypad.get()
-	
-	if inp["P1 Coin"] then	
-		contadordeentradas=contadordeentradas+1
-	else
-		contadordeentradas=0
-	end
-		
-	if contadordeentradas == 30 then 
-		if menuActivo then
-			menuActivo=false
-		else
-			menuActivo=true
-			v=false
-		end
-	end
-end
-t[4]="i"
-local contadorMenu=0
-local menuOpcion={
-	  {"Joystick   :",false,{"No","Si"},1}
-	 ,{"Energia    :",false,{"Normal","Infinita"},1}
-	 ,{"Tiempo     :",false,{"Normal","Infinito"},1}
-	 ,{"Mareo  P2  :",false,{"Normal","Sin mareo"},1}
-	 ,{"Accion P2  :",false,{"Ninguna","1 Bloquear Contraatacar","2 Patada Abajo chica","3 Patada Abajo Grande","4 Bloquea Combo Abajo","5 Bloque Combo Arriba","6 Salta","7 Salta y Patea"},1}
-}
-local seleccionMenu={
-			 vertical=1
-			,horizontal=1
-		}
-t[3]="d"
-function menuElegir()
-	local width,height = emu.screenwidth() ,emu.screenheight()
-	
-	if not menuActivo then return end 
-	
-	local inp = joypad.get()
-	
-	if inp["P1 Down"] then	
-		contadorMenu=contadorMenu+1
-		if contadorMenu == 1 then
-			seleccionMenu.vertical=seleccionMenu.vertical+1
-		end
-	elseif inp["P1 Up"] then
-		contadorMenu=contadorMenu+1
-		if contadorMenu == 1 then
-			seleccionMenu.vertical=seleccionMenu.vertical-1
-		end
-	elseif inp["P1 Right"] then
-		contadorMenu=contadorMenu+1
-		if contadorMenu == 1 then
-			seleccionMenu.horizontal= menuOpcion[seleccionMenu.vertical][4]
-			seleccionMenu.horizontal=seleccionMenu.horizontal+1
-			if seleccionMenu.horizontal > #menuOpcion[seleccionMenu.vertical][3] then
-				seleccionMenu.horizontal=1 
-			end
-			menuOpcion[seleccionMenu.vertical][4]=seleccionMenu.horizontal
-		end
-	elseif inp["P1 Left"] then
-		contadorMenu=contadorMenu+1
-		if contadorMenu == 1 then
-			seleccionMenu.horizontal= menuOpcion[seleccionMenu.vertical][4]
-			seleccionMenu.horizontal=seleccionMenu.horizontal-1
-			if seleccionMenu.horizontal < 1 then
-				seleccionMenu.horizontal= #menuOpcion[seleccionMenu.vertical][3]
-			end
-			menuOpcion[seleccionMenu.vertical][4]=seleccionMenu.horizontal
-		end	
-	else
-		contadorMenu=0
+	if action_select > 3 then
+		action_select = 0
 	end
 	
-	if seleccionMenu.vertical > #menuOpcion then 
-		seleccionMenu.vertical=#menuOpcion
-	elseif 	seleccionMenu.vertical < 1 then
-		seleccionMenu.vertical=1
+	if action_select == 0 then
+		return "Disabled"
+	elseif action_select  == 1 then		
+		return "Action Reversal"
+	elseif action_select  == 2 then
+		return "Action 3"
+	elseif action_select  == 3 then
+		return "Action 4"
 	end
-	
-	for i=1, #menuOpcion do
-		if seleccionMenu.vertical == i  then
-			menuOpcion[i][2]=true
-		else
-			menuOpcion[i][2]=false
-		end
-	end	
-	
-	if menuActivo then 	
-		dibujaMenu()
-	end
-	
-end
-t[2]="o"
-local menuEstatico={
-				cabecera={"-- OPCIONES DE MENU --"}
-			 ,  pie		={"SF2CE Modo Entrenamiento v1.0","Para Fightcade 2","Creado por intiMarqo","Sep.21"}
-			 ,  titulo  ={"Modo intiMarqo"}
-			}
-function dibujaMenu()
-		local width,height = emu.screenwidth() ,emu.screenheight()
-		
-		x1 = width/4
-		y1 = height/6
-		
-		x2 = width-x1
-		y2 = height-y1
-		
-		gui.box(x1,y1,x2,y2,K_N,K_R)
-		
-		separacion_texto_v=8
-		separacion_texto_h=10
-		
-		for x=1, #menuEstatico.cabecera do
-			y1=y1+separacion_texto_v
-			gui.text(((width/2) - 4*(string.len(menuEstatico.cabecera[x])/2)), y1 , menuEstatico.cabecera[x])
-		end
-		
-		x1=x1+separacion_texto_h
-		y1=y1+(2*separacion_texto_v)
-		
-		for i=1, #menuOpcion do
-			
-			if menuOpcion[i][2] then
-				gui.text(x1, y1 , menuOpcion[i][1],K_R)
-			else
-				gui.text(x1, y1 , menuOpcion[i][1])
-			end
-			
-			if #menuOpcion[i][3]>0 then
-				valorSubmenu = menuOpcion[i][4]
-				gui.text(x1+50, y1 , menuOpcion[i][3][valorSubmenu])
-			end	
-			
-			y1=y1+separacion_texto_v
-		end
-		
-		puntoImpresionTexto_y=height-70
-		for r=1, #menuEstatico.pie do
-			gui.text(((width/2) - 4*(string.len(menuEstatico.pie[r])/2)), puntoImpresionTexto_y , menuEstatico.pie[r],K_A)
-			puntoImpresionTexto_y=puntoImpresionTexto_y+separacion_texto_v
-		end
-		
-end
-t[1]="m"
-function menuEjecutaConfiguracion()
-		v_indarena =memory.readbyte(t_juego.ind_arena)
-		if menuOpcion[1][4]==2 then inputdisplay2() end	
-		if menuOpcion[2][4]==2 then energiaInfinita() end
-		if menuOpcion[3][4]==2 then tiempoInfinito() end
-		if menuOpcion[4][4]==2 then mareo() end
-		if menuOpcion[5][4]==2 then if v_indarena ~= 0 then accion_bloquearContraAtacar() else return end end
-		if menuOpcion[5][4]==3 then if v_indarena ~= 0 then accion_patadaAbajoPequena() else return end end
-		if menuOpcion[5][4]==4 then if v_indarena ~= 0 then accion_patadaAbajoGrande() else return end end
-		if menuOpcion[5][4]==5 then if v_indarena ~= 0 then accion_bloquearComboAbajo() else return end end
-		if menuOpcion[5][4]==6 then if v_indarena ~= 0 then accion_bloquearComboArriba() else return end end
-		if menuOpcion[5][4]==7 then if v_indarena ~= 0 then accion_salta() else return end end
-		if menuOpcion[5][4]==8 then if v_indarena ~= 0 then accion_saltaPatea() else return end end
-end	
-
-function inicia()
-	local width,height = emu.screenwidth() ,emu.screenheight()
-	x = width/2
-	y = height/21
-	j = t[1]..t[2]..t[3]..t[2]..' '..t[4]..t[5]..t[6]..t[4]..t[1]..t[7]..t[8]..t[9]..t[2]
-	gui.text(( x - 4*(string.len(j)/2)), y , j)
 end
 
-function instruccionInicio()
-	local width,height = emu.screenwidth() ,emu.screenheight()
-	x = width/15
-	y = height/21
-	if v then 
-	j = 'Mantener presionado boton -P1 Coin-'
-	gui.text(( x - (string.len(j)/2)), y , j)
-	end
-	
-end
-
-gui.register(function() 
-    menuHabilitar()
-	menuElegir()
-	menuEjecutaConfiguracion()
-	inicia()
-	instruccionInicio()
-end) 
+return lib

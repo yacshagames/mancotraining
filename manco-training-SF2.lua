@@ -70,6 +70,12 @@ if not training then
 	return -- abort script
 end
 
+local macro_actions = require("modules/macro_actions")
+if not macro_actions then	
+	print("modules/macro_actions.lua not found")
+	return -- abort script
+end
+
 ----------------------------------------------------------------------------------------------------
 --Interface Functions
 ----------------------------------------------------------------------------------------------------
@@ -95,13 +101,17 @@ end
 
 local function InputDisplay()
 
-	print("> Input display: " .. input_display.toggleplayer())
-	
+	print("> Input display: " .. input_display.toggleplayer())	
 end
 
 local function StageSelector()
 
 	print( "> Stage: " .. stage_selector.StageSelector() )	
+end
+
+local function EnableMacroActions()
+
+	print( "> Action1: " .. macro_actions.EnableMacroActions() )	
 end
 
 
@@ -159,12 +169,14 @@ input.registerhotkey(2, function()
 end)
 
 input.registerhotkey(3, function()
-
+--[[
 	if current_menu==0 then
 		ToggleHUD()
 	else
 		ShowMainMenu()
 	end
+]]--
+	EnableMacroActions()
 end)
 
 input.registerhotkey(4, function()
@@ -209,6 +221,8 @@ while true do
 
 		-- lock actions for player 1 and 2
 		lock_actions.lock_actions()
+
+		macro_actions.MacroActions()
 
 	end)
 	--Pause the script until the next frame
