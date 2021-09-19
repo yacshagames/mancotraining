@@ -99,9 +99,14 @@ local function EnableHitboxes()
 	print( hitbox.EnableHitboxes() )	
 end
 
-local function InputDisplay()
+local function InputDisplay1()
 
-	print("> Input display: " .. input_display.toggleplayer())	
+	print("> Input display 1: " .. input_display.InputDisplay1_TogglePlayer())	
+end
+
+local function InputDisplay2()
+
+	print("> Input display 2: " .. input_display.InputDisplay2_Enable())	
 end
 
 local function StageSelector()
@@ -128,8 +133,8 @@ function ShowMainMenu()
 	print("------- Credits: Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac -------")
 	print("(Alt+1): Toggle Training Mode on/off")
 	print("(Alt+2): Lock Actions (Candado Training)")
-	print("(Alt+3): Toggle HUD Display")
-	print("(Alt+4): Display/Hide Hitboxes")
+	print("(Alt+3): Macro Actions")
+	print("(Alt+4): Toggle HUD Display")
 	print("(Alt+5): More options...")
 	print("---------------------------------------------------------------------------------")
 end
@@ -141,9 +146,11 @@ local function ShowSubmenu1()
 
 	print("MANCO Training Street Fighter 2 for Fightcade2 v0.4")
 	print("------- Credits: Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac -------")
-	print("(Alt+1): Display/Hide Scrolling Input")
-	print("(Alt+2): Toggle Background Stage Selector")
-	print("(Alt+3): Return main menu...")
+	print("(Alt+1): Toggle Background Stage Selector")
+	print("(Alt+2): Display/Hide Hitboxes")
+	print("(Alt+3): Display/Hide Scrolling Input")
+	print("(Alt+4): Display/Hide Fightstick Input")
+	print("(Alt+5): Return main menu...")
 	print("---------------------------------------------------------------------------------")
 end
 
@@ -155,7 +162,7 @@ input.registerhotkey(1, function()
 	if current_menu==0 then
 		EnableTraining()
 	else
-		InputDisplay()
+		StageSelector()
 	end
 end)
 
@@ -164,37 +171,36 @@ input.registerhotkey(2, function()
 	if current_menu==0 then
 		LockActions()
 	else
-		StageSelector()
+		EnableHitboxes()
 	end	
 end)
 
 input.registerhotkey(3, function()
---[[
+
 	if current_menu==0 then
-		ToggleHUD()
+		EnableMacroActions()
 	else
-		ShowMainMenu()
-	end
-]]--
-	EnableMacroActions()
+		InputDisplay1()
+	end	
 end)
 
 input.registerhotkey(4, function()
 
-	if current_menu==0 then
-		EnableHitboxes()	
+	if current_menu==0 then		
+		ToggleHUD()
+	else
+		InputDisplay2()
 	end
 end)
 
 input.registerhotkey(5, function()
 	
 	if current_menu==0 then
-		ShowSubmenu1()	
+		ShowSubmenu1()
+	else
+		ShowMainMenu()
 	end
 end)
-
-
-
 
 ----------------------------------------------------------------------------------------------------
 --Main loop
@@ -208,7 +214,7 @@ while true do
 		hitbox.DrawHitboxes()
 
 		--Scrolling Input display
-		input_display.ScrollingInputDisplay()
+		input_display.Show()
 
 		-- Training Script stuff
 		training.training_logic()

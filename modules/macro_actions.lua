@@ -2,6 +2,11 @@ lib = {}
 
 local action_select = 0
 
+local t_juego ={
+			 juego_contador_entrada=0
+			,ind_arena=0X00FF803A
+		}
+
 local t_jugador={
 	  nro_jugador=2
 	 ,ind_prepara_counter=0
@@ -33,134 +38,11 @@ local accion_p2_BCA={
 			 ,secuenciaConterProgramado_indice=1
 		     ,secuenciaConvertida      = {}
 		}
-local function accion_salta()
-		t_movimientos = {}
-		t_movimientos["P2 Up"]=true
-		joypad.set(t_movimientos)
-end
 
-local function accion_saltaPatea()
-	t_movimientos = {}
-	v_indicador_aire= memory.readbyte(t_jugador.ind_aire)
-	v_orientacion   = memory.readbyte(t_jugador.ind_orientacion)
-	v_char          = memory.readbyte(t_jugador.ind_char)
-	print(v_indicador_aire)
-	t_movimientos["P"..t_jugador.nro_jugador.." Up"]=true
-	
-	if v_orientacion == 1 then
-		t_movimientos["P"..t_jugador.nro_jugador.." Left"]=true
-	elseif v_orientacion == 0 then
-		t_movimientos["P"..t_jugador.nro_jugador.." Right"]=true
-	end
-	
-	if v_char == 0 or v_char == 1 or v_char ==3 or v_char == 4 or v_char == 6 or v_char == 8 or v_char == 9 or v_char == 10 then 
-		if v_indicador_aire==10 or v_indicador_aire==9 or v_indicador_aire==8 or v_indicador_aire==7 then
-			t_juego.juego_contador_entrada=1
-		end
-		if (v_indicador_aire == 4 or v_indicador_aire==5 or v_indicador_aire==3 or v_indicador_aire==6)  and t_juego.juego_contador_entrada==1 then
-			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=true
-		else
-			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=false
-		end
-	elseif v_char == 2 or v_char == 5 or v_char ==7 or v_char ==11 then 
-		if v_indicador_aire==11 or v_indicador_aire==12 or v_indicador_aire==13 then
-			t_juego.juego_contador_entrada=1
-		end
-		if (v_indicador_aire == 10 or v_indicador_aire==9 or v_indicador_aire==8)  and t_juego.juego_contador_entrada==1 then
-			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=true
-		else
-			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=false
-		end
-	end
-	
-	
-	if v_indicador_aire == 0 then
-		t_juego.juego_contador_entrada=0
-	end 
-	
-	joypad.set(t_movimientos)
-end
-			 
-function accion_patadaAbajoPequena()
-		t_movimientos2 = {}
-		if t_juego.juego_contador_entrada == 0 then
-			t_movimientos2["P2 Down"]=true
-			t_movimientos2["P2 Weak Kick"]=true
-			joypad.set(t_movimientos2)
-			t_juego.juego_contador_entrada=t_juego.juego_contador_entrada+1
-		else
-			t_movimientos2["P2 Down"]=true
-			t_movimientos2["P2 Weak Kick"]=false
-			joypad.set(t_movimientos2)
-			t_juego.juego_contador_entrada=t_juego.juego_contador_entrada-1
-		end 
-end
 
-local function accion_patadaAbajoGrande()
-		t_movimientos2 = {}
-		if t_juego.juego_contador_entrada == 0 then
-		t_movimientos2["P2 Down"]=true
-		t_movimientos2["P2 Strong Kick"]=true
-		joypad.set(t_movimientos2)
-		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada+1
-		else
-		t_movimientos2["P2 Down"]=true
-		t_movimientos2["P2 Strong Kick"]=false
-		joypad.set(t_movimientos2)
-		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada-1
-		end 
-end
-
-local function accion_bloquearComboAbajo()
-	t_movimientos = {}
-	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
-	v_orientacion  = memory.readbyte(t_jugador.ind_orientacion)
-	
-	if ind_recibe_golpe==1 then
-		accion_p2_BC.aux_contador_local=accion_p2_BC.nro_repeticion_accion
-	end
-	
-	if accion_p2_BC.aux_contador_local > 0 then
-	
-		accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Down"
-		t_movimientos[accion_p2_BC.secuenciaDefault]=true
-		
-		if v_orientacion == 1 then
-			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Right"
-		elseif v_orientacion == 0 then
-			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Left"
-		end
-	
-		t_movimientos[accion_p2_BC.secuenciaDefault]=true
-		joypad.set(t_movimientos)
-		accion_p2_BC.aux_contador_local=accion_p2_BC.aux_contador_local-1
-	end
-end
---t[9]="q"
-function accion_bloquearComboArriba()
-	t_movimientos = {}
-	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
-	v_orientacion    = memory.readbyte(t_jugador.ind_orientacion)
-	
-	if ind_recibe_golpe==1 then
-		accion_p2_BC.aux_contador_local=accion_p2_BC.nro_repeticion_accion
-	end
-	
-	if accion_p2_BC.aux_contador_local > 0 then
-	
-		if v_orientacion == 1 then
-			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Right"
-		elseif v_orientacion == 0 then
-			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Left"
-		end
-	
-		t_movimientos[accion_p2_BC.secuenciaDefault]=true
-		joypad.set(t_movimientos)
-		accion_p2_BC.aux_contador_local=accion_p2_BC.aux_contador_local-1
-	end
-end
-
---t[8]="r"
+----------------------------------------------------------------------------------------------------
+-- Bloquear y contra atacar
+----------------------------------------------------------------------------------------------------
 function accion_bloquearContraAtacar()
 	t_movimientos = {}
 	v_orientacion  = memory.readbyte(t_jugador.ind_orientacion)
@@ -255,37 +137,205 @@ function accion_bloquearContraAtacar()
 
 end
 
+----------------------------------------------------------------------------------------------------
+-- Macro de patada chica agachado
+----------------------------------------------------------------------------------------------------
+local function accion_patadaAbajoGrande()
+		t_movimientos2 = {}
+		if t_juego.juego_contador_entrada == 0 then
+		t_movimientos2["P2 Down"]=true
+		t_movimientos2["P2 Strong Kick"]=true
+		joypad.set(t_movimientos2)
+		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada+1
+		else
+		t_movimientos2["P2 Down"]=true
+		t_movimientos2["P2 Strong Kick"]=false
+		joypad.set(t_movimientos2)
+		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada-1
+		end 
+end
+			 
+function accion_patadaAbajoPequena()
+		t_movimientos2 = {}
+		if t_juego.juego_contador_entrada == 0 then
+			t_movimientos2["P2 Down"]=true
+			t_movimientos2["P2 Weak Kick"]=true
+			joypad.set(t_movimientos2)
+			t_juego.juego_contador_entrada=t_juego.juego_contador_entrada+1
+		else
+			t_movimientos2["P2 Down"]=true
+			t_movimientos2["P2 Weak Kick"]=false
+			joypad.set(t_movimientos2)
+			t_juego.juego_contador_entrada=t_juego.juego_contador_entrada-1
+		end 
+end
+
+----------------------------------------------------------------------------------------------------
+-- Macro de patada fuerte agachado (barrida)
+----------------------------------------------------------------------------------------------------
+local function accion_patadaAbajoGrande()
+		t_movimientos2 = {}
+		if t_juego.juego_contador_entrada == 0 then
+		t_movimientos2["P2 Down"]=true
+		t_movimientos2["P2 Strong Kick"]=true
+		joypad.set(t_movimientos2)
+		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada+1
+		else
+		t_movimientos2["P2 Down"]=true
+		t_movimientos2["P2 Strong Kick"]=false
+		joypad.set(t_movimientos2)
+		t_juego.juego_contador_entrada=t_juego.juego_contador_entrada-1
+		end 
+end
+
+----------------------------------------------------------------------------------------------------
+-- Solo bloquea por abajo
+----------------------------------------------------------------------------------------------------
+
+local function accion_bloquearComboAbajo()
+	t_movimientos = {}
+	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
+	v_orientacion  = memory.readbyte(t_jugador.ind_orientacion)
+	
+	if ind_recibe_golpe==1 then
+		accion_p2_BC.aux_contador_local=accion_p2_BC.nro_repeticion_accion
+	end
+	
+	if accion_p2_BC.aux_contador_local > 0 then
+	
+		accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Down"
+		t_movimientos[accion_p2_BC.secuenciaDefault]=true
+		
+		if v_orientacion == 1 then
+			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Right"
+		elseif v_orientacion == 0 then
+			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Left"
+		end
+	
+		t_movimientos[accion_p2_BC.secuenciaDefault]=true
+		joypad.set(t_movimientos)
+		accion_p2_BC.aux_contador_local=accion_p2_BC.aux_contador_local-1
+	end
+end
+
+----------------------------------------------------------------------------------------------------
+-- Solo bloquea por arriba
+----------------------------------------------------------------------------------------------------
+function accion_bloquearComboArriba()
+	t_movimientos = {}
+	ind_recibe_golpe = memory.readbyte(t_jugador.ind_recibeGolpe)
+	v_orientacion    = memory.readbyte(t_jugador.ind_orientacion)
+	
+	if ind_recibe_golpe==1 then
+		accion_p2_BC.aux_contador_local=accion_p2_BC.nro_repeticion_accion
+	end
+	
+	if accion_p2_BC.aux_contador_local > 0 then
+	
+		if v_orientacion == 1 then
+			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Right"
+		elseif v_orientacion == 0 then
+			accion_p2_BC.secuenciaDefault="P"..t_jugador.nro_jugador.." Left"
+		end
+	
+		t_movimientos[accion_p2_BC.secuenciaDefault]=true
+		joypad.set(t_movimientos)
+		accion_p2_BC.aux_contador_local=accion_p2_BC.aux_contador_local-1
+	end
+end
+
+----------------------------------------------------------------------------------------------------
+-- Macro de solo saltar hacia arriba
+----------------------------------------------------------------------------------------------------
+local function accion_salta()
+		t_movimientos = {}
+		t_movimientos["P2 Up"]=true
+		joypad.set(t_movimientos)
+end
+
+----------------------------------------------------------------------------------------------------
+-- Macro de saltar en diagonal y patear
+----------------------------------------------------------------------------------------------------
+local function accion_saltaPatea()
+	t_movimientos = {}
+	v_indicador_aire= memory.readbyte(t_jugador.ind_aire)
+	v_orientacion   = memory.readbyte(t_jugador.ind_orientacion)
+	v_char          = memory.readbyte(t_jugador.ind_char)
+	--print(v_indicador_aire)
+	t_movimientos["P"..t_jugador.nro_jugador.." Up"]=true
+	
+	if v_orientacion == 1 then
+		t_movimientos["P"..t_jugador.nro_jugador.." Left"]=true
+	elseif v_orientacion == 0 then
+		t_movimientos["P"..t_jugador.nro_jugador.." Right"]=true
+	end
+	
+	if v_char == 0 or v_char == 1 or v_char ==3 or v_char == 4 or v_char == 6 or v_char == 8 or v_char == 9 or v_char == 10 then 
+		if v_indicador_aire==10 or v_indicador_aire==9 or v_indicador_aire==8 or v_indicador_aire==7 then
+			t_juego.juego_contador_entrada=1
+		end
+		if (v_indicador_aire == 4 or v_indicador_aire==5 or v_indicador_aire==3 or v_indicador_aire==6)  and t_juego.juego_contador_entrada==1 then
+			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=true
+		else
+			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=false
+		end
+	elseif v_char == 2 or v_char == 5 or v_char ==7 or v_char ==11 then 
+		if v_indicador_aire==11 or v_indicador_aire==12 or v_indicador_aire==13 then
+			t_juego.juego_contador_entrada=1
+		end
+		if (v_indicador_aire == 10 or v_indicador_aire==9 or v_indicador_aire==8)  and t_juego.juego_contador_entrada==1 then
+			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=true
+		else
+			t_movimientos["P"..t_jugador.nro_jugador.." Strong Kick"]=false
+		end
+	end
+	
+	
+	if v_indicador_aire == 0 then
+		t_juego.juego_contador_entrada=0
+	end 
+	
+	joypad.set(t_movimientos)
+end
+
+----------------------------------------------------------------------------------------------------
+-- Ejecuta la macro seleccionada
+----------------------------------------------------------------------------------------------------
 function lib.MacroActions()
 
 	if action_select == 1 then		
 		accion_bloquearContraAtacar()
 	elseif action_select  == 2 then
-		
+		accion_patadaAbajoPequena()
 	elseif action_select  == 3 then
-	
+		accion_patadaAbajoGrande()
+	elseif action_select  == 4 then
+		accion_bloquearComboAbajo()
+	elseif action_select  == 5 then
+		accion_bloquearComboArriba()
+	elseif action_select  == 6 then
+		accion_salta()
+	elseif action_select  == 7 then
+		accion_saltaPatea()
 	end
 end
-
 
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
+local optionMenu={"Ninguna","1 Bloquear Contraatacar","2 Patada Abajo chica","3 Patada Abajo Grande","4 Bloquea Combo Abajo","5 Bloque Combo Arriba","6 Salta","7 Salta y Patea"}
+local optionMenuLength = #optionMenu
+print (optionMenuLength)
+
 function lib.EnableMacroActions()
+
 	action_select = action_select + 1
 
-	if action_select > 3 then
+	if action_select >= optionMenuLength then
 		action_select = 0
 	end
-	
-	if action_select == 0 then
-		return "Disabled"
-	elseif action_select  == 1 then		
-		return "Action Reversal"
-	elseif action_select  == 2 then
-		return "Action 3"
-	elseif action_select  == 3 then
-		return "Action 4"
-	end
+
+	return optionMenu[action_select+1];
 end
 
 return lib

@@ -363,7 +363,7 @@ end)
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
 
-function lib.toggleplayer()
+function lib.InputDisplay1_TogglePlayer()
 	if not draw[1] and not draw[2] then
 		draw[1] = true
 		draw[2] = false
@@ -390,7 +390,7 @@ end
 ----------------------------------------------------------------------------------------------------
 --Scrolling Input display
 ----------------------------------------------------------------------------------------------------
-function lib.ScrollingInputDisplay()
+function InputDisplay1_Show()
 
 	for player = 1, 2 do		
 		if draw[player] then
@@ -430,5 +430,73 @@ end
 --End Scrolling Input script by: Dammit
 --Homepage: http://code.google.com/p/mame-rr/
 ----------------------------------------------------------------------------------------------------
+
+function lib.Show()
+	InputDisplay1_Show()
+	InputDisplay2_Show()
+end
+
+
+----------------------------------------------------------------------------------------------------
+-- Input Display version 2 - Show Fightstick in text mode
+----------------------------------------------------------------------------------------------------
+local t_color = { 
+		on1  = 0xFF0000FF,
+		on2  = 0x000000FF,
+		off1 = 0xFFFFFFFF,
+		off2 = 0x000000FF
+	}
+
+local InputDisplay2Enabled = true
+
+
+function InputDisplay2_Show()
+
+	if InputDisplay2Enabled ==false then
+		return
+	end
+
+	local tabla_inp = {}
+	local width,height = emu.screenwidth() ,emu.screenheight()
+	--
+	for n = 1, 2 do
+		tabla_inp[n .. "^"] =  {(n-1)/n*width + 95 , height - 18, "P" .. n .. " Up"}
+		tabla_inp[n .. "v"] =  {(n-1)/n*width + 95 , height - 12, "P" .. n .. " Down"}
+		tabla_inp[n .. "<"] =  {(n-1)/n*width + 89 , height - 15, "P" .. n .. " Left"}
+		tabla_inp[n .. ">"] =  {(n-1)/n*width + 101 , height - 15, "P" .. n .. " Right"}
+		
+		tabla_inp[n .. "LP"] = {(n-1)/n*width + 55 , height - 19, "P" .. n .. " Weak Punch"}
+		tabla_inp[n .. "MP"] = {(n-1)/n*width + 65, height - 19, "P" .. n .. " Medium Punch"}
+		tabla_inp[n .. "HP"] = {(n-1)/n*width + 75, height - 19, "P" .. n .. " Strong Punch"}
+		
+		tabla_inp[n .. "LK"] = {(n-1)/n*width + 55 , height - 11, "P" .. n .. " Weak Kick"}
+		tabla_inp[n .. "MK"] = {(n-1)/n*width + 65, height - 11, "P" .. n .. " Medium Kick"}
+		tabla_inp[n .. "HK"] = {(n-1)/n*width + 75, height - 11, "P" .. n .. " Strong Kick"}
+			
+	end
+	
+	for k,v in pairs(tabla_inp) do
+		local color1,color2 = t_color.on1,t_color.on2
+		if joypad.get()[v[3]] == false  then
+			color1,color2 = t_color.off1,t_color.off2
+		end
+		gui.text(v[1], v[2], string.sub(k, 2), color1, color2)
+	end
+	
+end
+
+----------------------------------------------------------------------------------------------------
+-- hotkey function
+----------------------------------------------------------------------------------------------------
+function lib.InputDisplay2_Enable()
+
+	InputDisplay2Enabled = not InputDisplay2Enabled
+
+	if InputDisplay2Enabled then
+		return "On"
+	else
+		return "Off"
+	end
+end
 
 return lib

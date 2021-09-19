@@ -13,11 +13,11 @@ local p2counter = 32
 
 function lib.training_logic()	
 	
-	if lib.training_mode == 0 then
+	if training_mode == 0 then
 		return
 	end
 
-	if lib.training_mode == 2 then
+	if training_mode == 2 then
 		--  Never get dizzied - Dizzy OFF
 		memory.writeword(game.training_logic.A17a,0)
 		memory.writeword(game.training_logic.A17b,0)
@@ -25,7 +25,7 @@ function lib.training_logic()
 		memory.writeword(game.training_logic.A18b,0)
 	end
 
-	if lib.training_mode == 3 then
+	if training_mode == 3 then
 		-- Always get dizzie - Dizzy ON
 		memory.writeword(game.training_logic.A17a,0x40)
 		memory.writeword(game.training_logic.A17b,0x40)
