@@ -74,7 +74,7 @@ local minimum_tile_size, maximum_tile_size = 8, 32
 local icon_size  = minimum_tile_size
 local thisframe, lastframe, module, keyset, changed = {}, {}
 local margin, rescale_icons, recording, display, start, effective_width = {}, true, false
-local draw = { [1] = true, [2] = true }
+local draw = { [1] = false, [2] = false }
 local allinputcounters  = { [1] =   {}, [2] =   {} }
 local nullinputcounters = { [1] = {[1] = 0}, [2] = {[1] = 0}}  -- counters for null input for player 1 and player 2
 local activeinputcounters = { [1] = {[1] = 0}, [2] = {[1] = 0}}  -- counters for active inputs player 1 and player 2
@@ -362,24 +362,34 @@ end)
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
+local option_select = 0
 
-function lib.InputDisplay1_TogglePlayer()
-	if not draw[1] and not draw[2] then
+function lib.InputDisplay1_TogglePlayer( incrementCounter )
+
+	option_select = option_select + incrementCounter
+
+	if option_select > 3 then
+		option_select = 0
+	elseif 	option_select < 0 then
+		option_select = 3	
+	end
+
+	if option_select==1 then
 		draw[1] = true
 		draw[2] = false
 		--print("> Input display: P1 on / P2 off")
 		return "P1 on / P2 off"
-	elseif draw[1] and not draw[2] then
+	elseif option_select==2 then
 		draw[1] = false
 		draw[2] = true
 		--print("> Input display: P1 off / P2 on")
 		return "P1 off / P2 on"
-	elseif not draw[1] and draw[2] then
+	elseif option_select==3 then
 		draw[1] = true
 		draw[2] = true
 		--print("> Input display: Both players on")
 		return "Both players on"
-	elseif draw[1] and draw[2] then
+	elseif option_select==0 then
 		draw[1] = false
 		draw[2] = false
 		--print("> Input display: Both players off")
@@ -488,9 +498,11 @@ end
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.InputDisplay2_Enable()
+function lib.InputDisplay2_Enable(incrementCounter)
 
-	InputDisplay2Enabled = not InputDisplay2Enabled
+	if incrementCounter ~= 0  then
+		InputDisplay2Enabled = not InputDisplay2Enabled
+	end	
 
 	if InputDisplay2Enabled then
 		return "On"

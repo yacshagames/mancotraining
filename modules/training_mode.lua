@@ -4,7 +4,7 @@
 ---------------------------------------
 local lib =  {}
 
-local training_mode = 0
+local training_mode = 1 -- Default value: Enabled
 local DELAY=0x0a    -- from 0 to ff (set to ff to disable)
 local p1timer=0
 local p2timer=0
@@ -122,11 +122,15 @@ end
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.EnableTraining()
-	training_mode = training_mode + 1
+function lib.EnableTraining( incrementCounter )
+	training_mode = training_mode + incrementCounter
+	
 	if training_mode > 3 then
 		training_mode = 0
+	elseif training_mode<0 then
+		training_mode = 3
 	end
+
 	if training_mode == 0 then
 		--print("> Training mode Disabled")
 		return "Disabled"

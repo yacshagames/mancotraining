@@ -174,14 +174,17 @@ end
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.LockActions()
+function lib.LockActions(incrementCounter)
 
 	-- Auto-block and auto-moves for player 2 (Candado Training Mode)
+
+	lock_action_selector = lock_action_selector + incrementCounter
 	
 	if lock_action_selector >= game.look_actions_count then
-		lock_action_selector=-1
-	end
-	lock_action_selector = lock_action_selector + 1
+		lock_action_selector=0
+	elseif lock_action_selector<0 then
+		lock_action_selector=game.look_actions_count-1
+	end	
 	
 	if lock_action_selector == 0 then
 		-- off lock actions
@@ -200,11 +203,9 @@ function lib.LockActions()
 	end	
 	
 	lock_action_param = actions[lock_action_selector][1]
-	--lib.action_name = actions[lock_action_selector][2]
-	--print("> Lock action: " .. action_name)
 
-	return actions[lock_action_selector][2]
-	
+	-- action name
+	return actions[lock_action_selector][2]	
 end
 
 return lib

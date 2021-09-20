@@ -24,7 +24,7 @@ profile = {
 			{param_offset = 0x6C, type = "throwable"},
 			{param_offset = 0x64, type = "throw"},
 		},
-		max_stage = 0xF,
+		number_of_stages = 16, -- number if stages o number of characters
 		look_actions_count = 13,
 		training_logic = { -- address for training_logic		
 			-- const
@@ -225,7 +225,7 @@ profile = {
 			{param_offset = 0x6C, type = "throwable"},
 			{param_offset = 0x64, type = "throw"},
 		},
-		max_stage = 0xB,
+		number_of_stages = 12, -- number if stages o number of characters
 		look_actions_count = 11,
 		training_logic = { -- address for training_logic		
 			-- const

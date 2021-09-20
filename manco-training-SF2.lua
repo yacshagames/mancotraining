@@ -27,7 +27,9 @@
 --  * training mode & stage selctor by pof
 
 
-
+----------------------------------------------------------------------------------------------------
+--Include Modules
+----------------------------------------------------------------------------------------------------
 local profile = require("modules/profile")
 if not profile then	
 	print("modules/profile.lua not found")
@@ -79,58 +81,276 @@ end
 ----------------------------------------------------------------------------------------------------
 --Interface Functions
 ----------------------------------------------------------------------------------------------------
-local function EnableTraining()
+local function EnableTraining(incrementCounter)
 
-	print( "> Training mode: " .. training.EnableTraining() )
+	result = training.EnableTraining(incrementCounter)
+	print( "> Training mode: " .. result )
+	return result
 end
 
-local function LockActions()
+local function LockActions(incrementCounter)
 
-	print("> Lock action: " ..  lock_actions.LockActions())	
+	result = lock_actions.LockActions(incrementCounter)
+	print("> Lock action: " ..  result)
+	return result
 end
 
-local function ToggleHUD()
-
-	print( "> HUD: " .. sf2hud.ToggleHUD() )
+local function ToggleHUD(incrementCounter)
+	result = sf2hud.ToggleHUD(incrementCounter) 
+	print( "> HUD: " .. result )
+	return result
 end
 
-local function EnableHitboxes()
+local function EnableHitboxes(incrementCounter)
 
-	print( hitbox.EnableHitboxes() )	
+	result = hitbox.EnableHitboxes(incrementCounter) 
+	print( "> Hitboxes: " .. result )	
+	return result
 end
 
-local function InputDisplay1()
+local function InputDisplay1(incrementCounter)
 
-	print("> Input display 1: " .. input_display.InputDisplay1_TogglePlayer())	
+	result = input_display.InputDisplay1_TogglePlayer(incrementCounter) 
+	print("> Scroll input display: " .. result)	
+	return result
 end
 
-local function InputDisplay2()
+local function InputDisplay2(incrementCounter)
 
-	print("> Input display 2: " .. input_display.InputDisplay2_Enable())	
+	result = input_display.InputDisplay2_Enable(incrementCounter) 
+	print("> Fightstick input display: " .. result)	
+	return result
 end
 
-local function StageSelector()
-
-	print( "> Stage: " .. stage_selector.StageSelector() )	
+local function StageSelector(incrementCounter)
+	result = stage_selector.StageSelector(incrementCounter)
+	print( "> Stage: " .. result )	
+	return result
 end
 
-local function EnableMacroActions()
+local function EnableMacroActions(incrementCounter)
 
-	print( "> Action1: " .. macro_actions.EnableMacroActions() )	
+	result = macro_actions.EnableMacroActions(incrementCounter)
+	print( "> Macro action: " .. result )	
+	return result
 end
 
 
 ----------------------------------------------------------------------------------------------------
---Menus
+--Interactive Visual Menu
 ----------------------------------------------------------------------------------------------------
+-- Menu colors
+local K_N = 0x000000FF
+local K_R = 0XFF0000FF
+local K_A = 0X87CEEBFF
+local K_B = 0XFFFFFFFF
+
+-- Menu variabkes
+local menuActivo=false
+local contadordeentradas=0
+local contadorMenu=0
+local MenuShowFirstTime = true
+
+local seleccionMenu={   vertical=1
+			,horizontal=1
+}
+
+local menuOpcion={
+	  {"Training Mode    :",false,""}
+	 ,{"Lock Actions     :",false,""}
+	 ,{"Macro Actions    :",false,""}
+	 ,{"HUD Display      :",false,""}
+	 ,{"Stage selector   :",false,""}
+	 ,{"Hitboxes         :",false,""}
+ 	 ,{"Scrolling Input  :",false,""}
+ 	 ,{"Fightstick Input :",false,""}
+}
+
+
+local menuEstatico={
+			    cabecera	= {"-- MENU OPTIONS --"}
+			 ,  pie		= {"MANCO Training Street Fighter 2 v2.0","for Fightcade","Credits: intiMarqo / Pof / Yacsha","Sep.2021"}
+			 ,  titulo	= "Modo MANCO"
+}
+
+-- Menu functions
+local function MenuExecute( optionMenu, incrementCounter )
+
+	if optionMenu==1 then
+		return EnableTraining(incrementCounter)
+	elseif optionMenu==2 then
+		return LockActions(incrementCounter)
+	elseif optionMenu==3 then
+		return EnableMacroActions(incrementCounter)
+	elseif optionMenu==4 then
+		return ToggleHUD(incrementCounter)
+	elseif optionMenu==5 then
+		return StageSelector(incrementCounter)
+	elseif optionMenu==6 then
+		return EnableHitboxes(incrementCounter)
+	elseif optionMenu==7 then
+		return InputDisplay1(incrementCounter)
+	elseif optionMenu==8 then
+		return InputDisplay2(incrementCounter)	
+	end
+
+	return "None"
+end
+
+local function LoadVisualMenuOptions()
+
+	-- Load default option to array menuOpcion
+	for i=1, #menuOpcion do
+		 menuOpcion[i][3] = MenuExecute( i, 0 )
+	end
+end
+
+local function menuHabilitar()
+	local inp = joypad.get()
+	
+	if inp["P1 Coin"] then	
+		contadordeentradas=contadordeentradas+1
+	else
+		contadordeentradas=0
+	end
+		
+	if contadordeentradas == 30 then 
+		if menuActivo then
+			menuActivo=false
+		else
+			menuActivo=true	
+			MenuShowFirstTime = false
+		end
+	end
+end
+
+local function dibujaMenu()
+		local width,height = emu.screenwidth() ,emu.screenheight()
+		
+		x1 = width/4
+		y1 = height/6
+		
+		x2 = width-x1
+		y2 = height-y1
+		
+		gui.box(x1,y1,x2,y2,K_N,K_R)
+		
+		separacion_texto_v=8
+		separacion_texto_h=10
+		
+		for x=1, #menuEstatico.cabecera do
+			y1=y1+separacion_texto_v
+			gui.text(((width/2) - 4*(string.len(menuEstatico.cabecera[x])/2)), y1 , menuEstatico.cabecera[x])
+		end
+		
+		x1=x1+separacion_texto_h
+		y1=y1+(2*separacion_texto_v)
+		
+		for i=1, #menuOpcion do
+			
+			if menuOpcion[i][2] then
+				gui.text(x1, y1 , menuOpcion[i][1],K_R)
+			else
+				gui.text(x1, y1 , menuOpcion[i][1])
+			end
+			
+			-- Show current "tool option" selected
+			gui.text(x1+75, y1 , menuOpcion[i][3])
+			
+			y1=y1+separacion_texto_v
+		end
+		
+		puntoImpresionTexto_y=height-70
+		for r=1, #menuEstatico.pie do
+			gui.text(((width/2) - 4*(string.len(menuEstatico.pie[r])/2)), puntoImpresionTexto_y , menuEstatico.pie[r],K_A)
+			puntoImpresionTexto_y=puntoImpresionTexto_y+separacion_texto_v
+		end
+		
+end
+
+local function ShowVisualMenu()
+
+	local width,height = emu.screenwidth() ,emu.screenheight()
+	
+	menuHabilitar()
+	
+	if MenuShowFirstTime then
+		-- show a help text to get the menu, only the first time the menu is invoked
+		x = width/15
+		y = height/21	
+		texto = "Press -P1 Coin- for show menu - " .. menuEstatico.titulo
+		gui.text(( x - (string.len(texto)/2)), y, texto)
+	else
+		-- Show Title
+		x = width/2
+		y = height/21
+		gui.text(( x - 4*(string.len(menuEstatico.titulo)/2)), y , menuEstatico.titulo)
+	end 	
+	
+	if not menuActivo then 
+		return 
+	end	
+	
+	local inp = joypad.get()
+	
+	if inp["P1 Down"] then	
+		contadorMenu=contadorMenu+1
+		if contadorMenu == 1 then
+			seleccionMenu.vertical=seleccionMenu.vertical+1
+		end
+	elseif inp["P1 Up"] then
+		contadorMenu=contadorMenu+1
+		if contadorMenu == 1 then
+			seleccionMenu.vertical=seleccionMenu.vertical-1
+		end
+	elseif inp["P1 Right"] then
+		contadorMenu=contadorMenu+1
+		
+		if contadorMenu == 1 then			
+			menuOpcion[seleccionMenu.vertical][3] = MenuExecute(seleccionMenu.vertical,1)
+		end	
+	elseif inp["P1 Left"] then
+		contadorMenu=contadorMenu+1
+
+		if contadorMenu == 1 then			
+			menuOpcion[seleccionMenu.vertical][3] = MenuExecute(seleccionMenu.vertical,-1)
+		end	
+	else
+		contadorMenu=0
+	end
+	
+	if seleccionMenu.vertical > #menuOpcion then 
+		seleccionMenu.vertical=1
+	elseif 	seleccionMenu.vertical < 1 then
+		seleccionMenu.vertical=#menuOpcion
+	end
+	
+	for i=1, #menuOpcion do
+		if seleccionMenu.vertical == i  then
+			menuOpcion[i][2]=true
+		else
+			menuOpcion[i][2]=false
+		end
+	end	
+	
+	if menuActivo then 	
+		dibujaMenu()
+	end
+	
+end
+----------------------------------------------------------------------------------------------------
+--Lua Console Menu
+----------------------------------------------------------------------------------------------------
+
+-- Options
 local current_menu = 0 -- 0: Main; 1: Submenu1
 
-function ShowMainMenu()
+local function ShowMainMenu()
 	
 	current_menu = 0
 
-	print("MANCO Training Street Fighter 2 for Fightcade2 v0.4")
-	print("------- Credits: Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac -------")
+	print("MANCO Training Street Fighter 2 for Fightcade2 v2.0")
+	print("-- Credits: Intimarqo / Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac --")
 	print("(Alt+1): Toggle Training Mode on/off")
 	print("(Alt+2): Lock Actions (Candado Training)")
 	print("(Alt+3): Macro Actions")
@@ -145,7 +365,7 @@ local function ShowSubmenu1()
 	current_menu = 1
 
 	print("MANCO Training Street Fighter 2 for Fightcade2 v0.4")
-	print("------- Credits: Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac -------")
+	print("-- Credits: Intimarqo / Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac --")
 	print("(Alt+1): Toggle Background Stage Selector")
 	print("(Alt+2): Display/Hide Hitboxes")
 	print("(Alt+3): Display/Hide Scrolling Input")
@@ -154,42 +374,41 @@ local function ShowSubmenu1()
 	print("---------------------------------------------------------------------------------")
 end
 
-----------------------------------------------------------------------------------------------------
+
 --Hot Keys
-----------------------------------------------------------------------------------------------------
 input.registerhotkey(1, function()
 
 	if current_menu==0 then
-		EnableTraining()
+		menuOpcion[1][3] = EnableTraining(1)
 	else
-		StageSelector()
+		menuOpcion[5][3] = StageSelector(1)
 	end
 end)
 
 input.registerhotkey(2, function()
 
 	if current_menu==0 then
-		LockActions()
+		menuOpcion[2][3] = LockActions(1)
 	else
-		EnableHitboxes()
-	end	
+		menuOpcion[6][3] = EnableHitboxes(1)
+	end
 end)
 
 input.registerhotkey(3, function()
 
 	if current_menu==0 then
-		EnableMacroActions()
+		menuOpcion[3][3] = EnableMacroActions(1)
 	else
-		InputDisplay1()
-	end	
+		menuOpcion[7][3] = InputDisplay1(1)
+	end
 end)
 
 input.registerhotkey(4, function()
 
 	if current_menu==0 then		
-		ToggleHUD()
+		menuOpcion[4][3] = ToggleHUD(1)
 	else
-		InputDisplay2()
+		menuOpcion[8][3] = InputDisplay2(1)
 	end
 end)
 
@@ -206,6 +425,7 @@ end)
 --Main loop
 ----------------------------------------------------------------------------------------------------
 ShowMainMenu()
+LoadVisualMenuOptions()
 
 while true do
 	-- Draw these functions on the same frame data is read
@@ -227,9 +447,12 @@ while true do
 
 		-- lock actions for player 1 and 2
 		lock_actions.lock_actions()
-
+		
+		-- Macro Actions
 		macro_actions.MacroActions()
 
+		-- Show Visual Menu
+		ShowVisualMenu()
 	end)
 	--Pause the script until the next frame
 	emu.frameadvance()

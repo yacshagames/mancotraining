@@ -325,14 +325,15 @@ end
 ----------------------------------------------------------------------------------------------------
 local optionMenu={"Ninguna","1 Bloquear Contraatacar","2 Patada Abajo chica","3 Patada Abajo Grande","4 Bloquea Combo Abajo","5 Bloque Combo Arriba","6 Salta","7 Salta y Patea"}
 local optionMenuLength = #optionMenu
-print (optionMenuLength)
 
-function lib.EnableMacroActions()
+function lib.EnableMacroActions(incrementCounter)
 
-	action_select = action_select + 1
+	action_select = action_select + incrementCounter
 
 	if action_select >= optionMenuLength then
 		action_select = 0
+	elseif action_select < 0 then
+		action_select = optionMenuLength-1
 	end
 
 	return optionMenu[action_select+1];

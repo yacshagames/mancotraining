@@ -30,7 +30,7 @@ local DRAW_DELAY           = 1
 local NUMBER_OF_PLAYERS    = 2
 local MAX_GAME_PROJECTILES = 8
 local MAX_BONUS_OBJECTS    = 16
-local draw_hitboxes	   = 1
+local draw_hitboxes	   = false -- Default value
 
 for _,game in ipairs(profile) do
 	game.box_number = #game.box_list + #game.throw_box_list
@@ -387,10 +387,13 @@ end
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.EnableHitboxes()
-	draw_hitboxes = not draw_hitboxes
-	--print((draw_hitboxes and "> Showing" or "> Hiding") .. " Hitboxes")
-	return (draw_hitboxes and "> Showing" or "> Hiding") .. " Hitboxes"
+function lib.EnableHitboxes(incrementCounter)
+
+	if incrementCounter ~= 0  then
+		draw_hitboxes = not draw_hitboxes
+	end
+	
+	return (draw_hitboxes and "Show" or "Hide")
 end
 
 --------------------------------------------------------------------------------

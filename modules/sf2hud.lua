@@ -4,7 +4,7 @@ lib = {}
 ----------------------------------------------------------------------------------------------------
 -- Global Variables
 ----------------------------------------------------------------------------------------------------
-local draw_hud=0
+local draw_hud=0 -- Default value: Hiding HUD
 local stage_timer=false
 local draw_hitboxes = true
 local p1_projectile = false
@@ -910,19 +910,22 @@ end
 ----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.ToggleHUD()
-	-- Toggle SF2 HUD
-	if draw_hud == 0 then
-		draw_hud = 1
-		--print("> HUD: Hiding special move displays")
-		return "Hiding special move displays"
-	elseif draw_hud == 1 then
-		draw_hud = 2
-		--print("> HUD: Showing full HUD")
-		return "Showing full HUD"
-	elseif draw_hud == 2 then
+function lib.ToggleHUD(incrementCounter)
+
+	draw_hud = draw_hud + incrementCounter
+
+	if draw_hud>2 then
 		draw_hud = 0
-		--print("> HUD: Hiding HUD")
+	elseif draw_hud<0 then
+		draw_hud = 2
+	end
+
+	-- Toggle SF2 HUD
+	if draw_hud == 1 then	
+		return "Showing basic HUD"
+	elseif draw_hud == 2 then
+		return "Showing full HUD"
+	elseif draw_hud == 0 then
 		return "Hiding HUD"
 	end
 end
