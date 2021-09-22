@@ -78,6 +78,12 @@ if not macro_actions then
 	return -- abort script
 end
 
+local fightstick_input = require("modules/fightstick_input")
+if not fightstick_input then	
+	print("modules/fightstick_input.lua not found")
+	return -- abort script
+end
+
 ----------------------------------------------------------------------------------------------------
 --Interface Functions
 ----------------------------------------------------------------------------------------------------
@@ -450,6 +456,8 @@ while true do
 		
 		-- Macro Actions
 		macro_actions.MacroActions()
+
+		fightstick_input.Fightstick_Show()
 
 		-- Show Visual Menu
 		ShowVisualMenu()
