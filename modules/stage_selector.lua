@@ -67,7 +67,7 @@ function toggle_background_stage()
 
 	end
 
-	print("Stage: ".. stage_selected)	
+	--print("Stage: ".. stage_selected)	
 end
 
 
