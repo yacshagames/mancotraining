@@ -45,7 +45,7 @@ local img_stick_back
 local img_stick_center
 local img_stick = {}
 
-local FightstickDisplayEnabled = true
+local FightstickDisplaySelector = 1 -- Default value
 
 local gd = require "gd"
 
@@ -112,12 +112,9 @@ end
 
 init()
 
-function lib.Fightstick_Show()
-
-	if FightstickDisplayEnabled ==false then
-		return
-	end	
-
+----------------------------------------------------------------------------------------------------
+-- Show Fightstick in Visual mode
+local function Fightstick_Visual_Show()
 
 	-- Display stick
 	for i,dataInputs in pairs(dataInputsStickPlayer) do -- dataInputsPlayer Array
@@ -172,19 +169,66 @@ function lib.Fightstick_Show()
 end
 
 ----------------------------------------------------------------------------------------------------
+-- Show Fightstick in text mode
+local t_color = { 
+		on1  = 0xFF0000FF,
+		on2  = 0x000000FF,
+		off1 = 0xFFFFFFFF,
+		off2 = 0x000000FF
+	}
+
+
+local function Fightstick_Text_Show()	
+
+	local t_entrada = {}
+	local width,height = emu.screenwidth() ,emu.screenheight()
+	for n = 1, 2 do
+		t_entrada[n .. "^"] =  {(n-1)/n*width + 55 , height - 18, "P" .. n .. " Up"}
+		t_entrada[n .. "v"] =  {(n-1)/n*width + 55 , height - 12, "P" .. n .. " Down"}
+		t_entrada[n .. "<"] =  {(n-1)/n*width + 49 , height - 15, "P" .. n .. " Left"}
+		t_entrada[n .. ">"] =  {(n-1)/n*width + 61 , height - 15, "P" .. n .. " Right"}
+		t_entrada[n .. "LP"] = {(n-1)/n*width + 75 , height - 19, "P" .. n .. " Weak Punch"}
+		t_entrada[n .. "MP"] = {(n-1)/n*width + 85,  height - 19, "P" .. n .. " Medium Punch"}
+		t_entrada[n .. "HP"] = {(n-1)/n*width + 95,  height - 19, "P" .. n .. " Strong Punch"}
+		t_entrada[n .. "LK"] = {(n-1)/n*width + 75 , height - 11, "P" .. n .. " Weak Kick"}
+		t_entrada[n .. "MK"] = {(n-1)/n*width + 85,  height - 11, "P" .. n .. " Medium Kick"}
+		t_entrada[n .. "HK"] = {(n-1)/n*width + 95,  height - 11, "P" .. n .. " Strong Kick"}
+	end
+
+	for k,v in pairs(t_entrada) do
+		local color1,color2 = t_color.on1,t_color.on2
+		if joypad.get()[v[3]] == false  then color1,color2 = t_color.off1,t_color.off2 end
+		gui.text(v[1], v[2], string.sub(k, 2), color1, color2)
+	end
+	
+end
+
+function lib.Fightstick_Show()
+
+	if FightstickDisplaySelector ==1 then
+		Fightstick_Visual_Show()		
+	elseif FightstickDisplaySelector ==3 then
+		Fightstick_Text_Show()	
+	end
+end
+
+----------------------------------------------------------------------------------------------------
 -- hotkey function
 ----------------------------------------------------------------------------------------------------
-function lib.FightstickDisplay_Enable(incrementCounter)
+local optionMenu={"Disabled","Fightstick","Joypad", "Text"}
+local optionMenuLength = #optionMenu
 
-	if incrementCounter ~= 0  then
-		FightstickDisplayEnabled = not FightstickDisplayEnabled
-	end	
+function lib.EnableFightstickDisplay(incrementCounter)
 
-	if FightstickDisplayEnabled then
-		return "On"
-	else
-		return "Off"
+	FightstickDisplaySelector = FightstickDisplaySelector + incrementCounter
+
+	if FightstickDisplaySelector >= optionMenuLength then
+		FightstickDisplaySelector = 0
+	elseif FightstickDisplaySelector < 0 then
+		FightstickDisplaySelector = optionMenuLength-1
 	end
+
+	return optionMenu[FightstickDisplaySelector+1];
 end
 
 return lib

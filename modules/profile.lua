@@ -104,7 +104,19 @@ profile = {
 			LAoff1 = 0x6710, -- off value 1
 			LAoff2 = 0x3B6D, -- off value 3
 			LAoff3 = 0x008A, -- off value 3
-			LAoff4 = 0x0BE0 -- off value 4
+			LAoff4 = 0x0BE0, -- off value 4
+			LA6 = 0xFF8451,
+			LA7 = 0xFF87E1, 
+			LA8 = 0xFF8A0C, 
+			LA9 = 0xFF8854, 
+			LA10 = 0xFF8454, 
+			LA11 = 0xFF87E0, 
+			-- Player1 and Player2 Won match
+			Player1SetsWon = 0xFF87DE,
+			Player2SetsWon = 0xFF8BDE,
+			-- Player1 and Player2 is Human
+			IsPlayer1Human = 0xFF87DC,
+			IsPlayer2Human = 0xFF8BDC
 		},
 		moves = {
 			--Boxer
@@ -311,7 +323,13 @@ profile = {
 			LA8 = 0xFF887C, 
 			LA9 = 0xFF86C4, 
 			LA10 = 0xFF83C4, 
-			LA11 = 0xFF8650 
+			LA11 = 0xFF8650, 
+			-- Player1 and Player2 Won match
+			Player1SetsWon = 0xFF864E,
+			Player2SetsWon = 0xFF894E,
+			-- Player1 and Player2 is Human
+			IsPlayer1Human = 0xFF864C,
+			IsPlayer2Human = 0xFF894C
 		},
 		moves = {
 			--Boxer

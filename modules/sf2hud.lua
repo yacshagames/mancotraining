@@ -847,64 +847,62 @@ function lib.render_hud()
 	
 	if in_match == 0 then
 		return
-	end
-	
-		if draw_hud > 0 then
-			--Universal
-			gui.text(153,12,"Distance X/Y: " .. calc_range()) 
-			--P1
-			gui.text(6,16,"X/Y: ") 
-			gui.text(2,24,memory.readword(game.training_logic.A22x) .. "," .. memory.readword(game.training_logic.A22y)) -- 0xFF8454 / 0xFF8458
-			gui.text(35,22,"Life: " .. memory.readbyte(game.training_logic.A22life)) -- 0xFF8479
-			gui.text(154,41,memory.readbyte(game.training_logic.A8) .. "/34") -- 0xFF84AD
-			gui.text(154,50,memory.readword(game.training_logic.A10)) -- 0xFF84AB
-			gui.box(35,45,150,49,0x00000040,0x000000FF)
-			gui.box(35,49,150,53,0x00000040,0x000000FF)
-			gui.line(136,45,136,49,0x000000FF)
+	elseif draw_hud > 0 then
+		--Universal
+		gui.text(153,12,"Distance X/Y: " .. calc_range()) 
+		--P1
+		gui.text(6,16,"X/Y: ") 
+		gui.text(2,24,memory.readword(game.training_logic.A22x) .. "," .. memory.readword(game.training_logic.A22y)) -- 0xFF8454 / 0xFF8458
+		gui.text(35,22,"Life: " .. memory.readbyte(game.training_logic.A22life)) -- 0xFF8479
+		gui.text(154,41,memory.readbyte(game.training_logic.A8) .. "/34") -- 0xFF84AD
+		gui.text(154,50,memory.readword(game.training_logic.A10)) -- 0xFF84AB
+		gui.box(35,45,150,49,0x00000040,0x000000FF)
+		gui.box(35,49,150,53,0x00000040,0x000000FF)
+		gui.line(136,45,136,49,0x000000FF)
 
-			if romname=="ssf2t" then 
-				gui.text(22,206,"Super: " .. memory.readbyte(game.training_logic.A15)) -- 0xFF8702
-				gui.text(6,216,"Special/Super Cancel: " .. check_cancel(1))
-			else
-				gui.text(6,216,"Special Cancel: " .. check_cancel(1))
-			end
-
-			--P2
-			gui.text(363,16,"X/Y: ")
-			gui.text(356,24,memory.readword(game.training_logic.A23x) .. "," .. memory.readword(game.training_logic.A23y))
-			gui.text(314,22,"Life: " .. memory.readbyte(game.training_logic.A23life))
-			gui.text(212,41,memory.readbyte(game.training_logic.A8) .. "/34")
-			gui.text(212,50,memory.readword(game.training_logic.A10))
-			gui.box(233,45,348,49,0x00000040,0x000000FF)
-			gui.box(233,49,348,53,0x00000040,0x000000FF)
-			gui.line(334,45,334,49,0x000000FF)
-
-			if romname=="ssf2t" then 
-				gui.text(327,206,"Super: " .. memory.readbyte(game.training_logic.A16)) -- 0xFF8B02
-				gui.text(255,216,"Special/Super Cancel: " .. check_cancel(2))
-			else
-				gui.text(255,216,"Special Cancel: " .. check_cancel(2))
-			end
-			
-			-- Character specific HUD
-			if draw_hud == 2 then
-
-				char1 = memory.readbyte(game.training_logic.p1_c)
-				char2 = memory.readbyte(game.training_logic.p1_c+game.p2)
-			
-				determine_char(1, char1, char2)
-				determine_char(2, char1, char2)
-			end 
-			if p1_projectile == true then
-				gui.text(34,56,"Projectile: " .. projectile_onscreen(0))
-			end
-			if p2_projectile == true then
-				gui.text(266,56,"Projectile: " .. projectile_onscreen(1))
-			end
-			draw_dizzy()
-			check_grab()
-			fskip()
+		if romname=="ssf2t" then 
+			gui.text(22,206,"Super: " .. memory.readbyte(game.training_logic.A15)) -- 0xFF8702
+			gui.text(6,216,"Special/Super Cancel: " .. check_cancel(1))
+		else
+			gui.text(6,216,"Special Cancel: " .. check_cancel(1))
 		end
+
+		--P2
+		gui.text(363,16,"X/Y: ")
+		gui.text(356,24,memory.readword(game.training_logic.A23x) .. "," .. memory.readword(game.training_logic.A23y))
+		gui.text(314,22,"Life: " .. memory.readbyte(game.training_logic.A23life))
+		gui.text(212,41,memory.readbyte(game.training_logic.A8) .. "/34")
+		gui.text(212,50,memory.readword(game.training_logic.A10))
+		gui.box(233,45,348,49,0x00000040,0x000000FF)
+		gui.box(233,49,348,53,0x00000040,0x000000FF)
+		gui.line(334,45,334,49,0x000000FF)
+
+		if romname=="ssf2t" then 
+			gui.text(327,206,"Super: " .. memory.readbyte(game.training_logic.A16)) -- 0xFF8B02
+			gui.text(255,216,"Special/Super Cancel: " .. check_cancel(2))
+		else
+			gui.text(255,216,"Special Cancel: " .. check_cancel(2))
+		end
+		
+		-- Character specific HUD
+		if draw_hud == 2 then
+
+			char1 = memory.readbyte(game.training_logic.p1_c)
+			char2 = memory.readbyte(game.training_logic.p1_c+game.p2)
+		
+			determine_char(1, char1, char2)
+			determine_char(2, char1, char2)
+		end 
+		if p1_projectile == true then
+			gui.text(34,56,"Projectile: " .. projectile_onscreen(0))
+		end
+		if p2_projectile == true then
+			gui.text(266,56,"Projectile: " .. projectile_onscreen(1))
+		end
+		draw_dizzy()
+		check_grab()
+		fskip()
+	end
 end
 
 ----------------------------------------------------------------------------------------------------
