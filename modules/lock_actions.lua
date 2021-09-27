@@ -7,7 +7,7 @@ local current_frame = 0
 local actions = {
 	{ 0x00,  "Neutral (Stand)" },
 	{ 0xfd,  "Block Everything" },
-	{ 0xfc,  "Block Ground Attacks" },
+	--{ 0xfc,  "Block Ground Attacks" },
 	{ 0x08,  "Up (Jump)" },
 	{ 0x09,  "Up-Right" },
 	{ 0x0A,  "Up-Left" },
@@ -80,13 +80,12 @@ function lib.lock_actions()
 		LA7 = memory.readbyte(game.training_logic.LA7) 
 		LA8 = memory.readbyte(game.training_logic.LA8)
 	
-		-- neutral when opponent is neutral
-		if LA6==0  then
-			memory.writeword(game.training_logic.LA1,0x0000)
-		end
+		if LA6==0  then -- neutral when opponent is neutral
 
-		-- if opponent attacking and pressing down, block low (on P1 side)
-		if (LA6==0xA or LA6==0xC) then
+			memory.writeword(game.training_logic.LA1,0x0000)
+
+		elseif LA6==0xA or LA6==0xC then -- if opponent attacking and pressing down, block low (on P1 side)
+			
 			bandLA7 = band(LA7,4)			
 
 			-- if opponent attacking and pressing down, block low (on P1 side
@@ -120,7 +119,8 @@ function lib.lock_actions()
 		if LA6==0x4 then
 
 			LA9 = memory.readword(game.training_logic.LA9) 
-			LA10 = memory.readword(game.training_logic.LA10) 
+			LA10 = memory.readword(game.training_logic.LA10)			
+			
 
 			-- block high if the opponent is at close range (<0xF) on P1 side 
 			if ( LA9-LA10 < 0xF) and LA8==0 then
@@ -144,15 +144,19 @@ function lib.lock_actions()
 		
 			-- ... except if: the opponent hits any kick or punch button
 
+			--[[ Disabled because the code produces unexpected behavior
+			
 			LA11 = memory.readword(game.training_logic.LA11) 
 
 			if band(LA11,0xFFF1)~=0 and LA8==0 then
+
 				memory.writeword(game.training_logic.LA1,0x0001)
 			end
 	
-			if band(LA11,0xFFF1)~=0 and LA8==1 then
+			if band(LA11,0xFFF1)~=0 and LA8==1 then	
 				memory.writeword(game.training_logic.LA1,0x0002)
 			end
+			]]--
 
 			--... and do not block when the opponent is so far that he can't reach us with a jumping normal attack
 

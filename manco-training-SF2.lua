@@ -116,14 +116,14 @@ end
 
 local function InputDisplay1(incrementCounter)
 
-	result = input_display.InputDisplay1_TogglePlayer(incrementCounter) 
+	result = input_display.InputDisplay_TogglePlayer(incrementCounter) 
 	print("> Scroll input display: " .. result)	
 	return result
 end
 
 local function InputDisplay2(incrementCounter)
 
-	result = input_display.InputDisplay2_Enable(incrementCounter) 
+	result = fightstick_input.EnableFightstickDisplay(incrementCounter) 
 	print("> Fightstick input display: " .. result)	
 	return result
 end
@@ -162,21 +162,21 @@ local seleccionMenu={   vertical=1
 }
 
 local menuOpcion={
-	  {"Training Mode    :",false,""}
-	 ,{"Lock Actions     :",false,""}
-	 ,{"Macro Actions    :",false,""}
-	 ,{"HUD Display      :",false,""}
-	 ,{"Stage selector   :",false,""}
-	 ,{"Hitboxes         :",false,""}
- 	 ,{"Scrolling Input  :",false,""}
- 	 ,{"Fightstick Input :",false,""}
+	  {"Training Mode   :",false,""}
+	 ,{"Lock Actions    :",false,""}
+	 ,{"Macro Actions   :",false,""}
+	 ,{"HUD Display     :",false,""}
+	 ,{"Stage selector  :",false,""}
+	 ,{"Hitboxes        :",false,""}
+ 	 ,{"Scrolling Input :",false,""}
+ 	 ,{"Joystick Input  :",false,""}
 }
 
 
 local menuEstatico={
 			    cabecera	= {"-- MENU OPTIONS --"}
 			 ,  pie		= {"MANCO Training Street Fighter 2 v2.0","for Fightcade","Credits: intiMarqo / Pof / Yacsha","Sep.2021"}
-			 ,  titulo	= "Modo MANCO"
+			 ,  titulo	= "MANCO Training"
 }
 
 -- Menu functions
@@ -375,7 +375,7 @@ local function ShowSubmenu1()
 	print("(Alt+1): Toggle Background Stage Selector")
 	print("(Alt+2): Display/Hide Hitboxes")
 	print("(Alt+3): Display/Hide Scrolling Input")
-	print("(Alt+4): Display/Hide Fightstick Input")
+	print("(Alt+4): Display/Hide Joystick Input")
 	print("(Alt+5): Return main menu...")
 	print("---------------------------------------------------------------------------------")
 end
@@ -446,7 +446,7 @@ while true do
 		training.training_logic()
 
 		-- Toggle background stage
-		stage_selector.toggle_background_stage()
+		stage_selector.select_background_stage()
 
 		-- ST HUD
 		sf2hud.render_hud()
