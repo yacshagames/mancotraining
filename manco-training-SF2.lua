@@ -6,6 +6,9 @@
 -- Based in Training: POF and Dammit      --
 --========================================--
 --
+-- v2.0
+-- 2021-09-26
+-- Virtual fightstick
 -- v0.4
 -- 2021-09-05
 -- A main menu and secondary subsmenus are added to manage multiple Training options
@@ -370,7 +373,7 @@ local function ShowSubmenu1()
 	
 	current_menu = 1
 
-	print("MANCO Training Street Fighter 2 for Fightcade2 v0.4")
+	print("MANCO Training Street Fighter 2 for Fightcade2 v2.0")
 	print("-- Credits: Intimarqo / Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac --")
 	print("(Alt+1): Toggle Background Stage Selector")
 	print("(Alt+2): Display/Hide Hitboxes")
