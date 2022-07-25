@@ -14,6 +14,11 @@ math.randomseed(os.clock()*100000000000)
 
 function toggle_background_stage()
 
+	if stage_selector == game.number_of_stages then
+		-- No valid stage selected
+		return
+	end
+
 	if romname=="ssf2t" then
 		--ssf2x ssf2t
 		cond = memory.readbyte(0xff8008)

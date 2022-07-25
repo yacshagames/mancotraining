@@ -144,7 +144,7 @@ local function InputDisplay2(incrementCounter)
 end
 
 local function StageSelector(incrementCounter)
-	--result = stage_selector.StageSelector(incrementCounter)
+	result = stage_selector.StageSelector(incrementCounter)
 	print( "> Stage: " .. result )	
 	return result
 end
@@ -463,7 +463,7 @@ while true do
 		training.training_logic()
 
 		-- Toggle background stage
-		--stage_selector.select_background_stage()
+		stage_selector.select_background_stage()
 
 		-- ST HUD
 		sf2hud.render_hud()
