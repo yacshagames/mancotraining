@@ -1,6 +1,7 @@
 lib = {}
 
-local stage_selector = game.number_of_stages + 1 -- Default value: Random stage
+--local stage_selector = game.number_of_stages + 1 -- Default value: Random stage
+local stage_selector = game.number_of_stages -- Default value: Disabled
 local stage_selected = 0
 local prev_is_p1_human
 local prev_is_p2_human

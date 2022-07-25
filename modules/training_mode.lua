@@ -4,7 +4,7 @@
 ---------------------------------------
 local lib =  {}
 
-local training_mode = 1 -- Default value: Enabled
+local training_mode = 0 -- Default value: Disabled
 local DELAY=0x0a    -- from 0 to ff (set to ff to disable)
 local p1timer=0
 local p2timer=0
