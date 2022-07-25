@@ -6,9 +6,13 @@
 -- Based in Training: POF and Dammit      --
 --========================================--
 --
+-- v2.1
+-- 2022-07-24
+-- Yzkof Virtual fightstick added
+-- Minor changes to more easily update the version number in all menus
 -- v2.0
 -- 2021-09-26
--- Virtual fightstick
+-- MadCatz Virtual fightstick added (Classic fightstick)
 -- v0.4
 -- 2021-09-05
 -- A main menu and secondary subsmenus are added to manage multiple Training options
@@ -29,6 +33,14 @@
 --  * ST HUD by Pasky
 --  * training mode & stage selctor by pof
 
+----------------------------------------------------------------------------------------------------
+--Name and Versión
+----------------------------------------------------------------------------------------------------
+local strMainName1 = "MANCO Training Street Fighter 2 v2.1"
+local strMainName2 = "for Fightcade"
+local strCredits = "Credits: intiMarqo / Pof / Yacsha"
+local strFecha = "Jul.2022"
+local strShortTittle = "MANCO Training v2.1"
 
 ----------------------------------------------------------------------------------------------------
 --Include Modules
@@ -132,7 +144,7 @@ local function InputDisplay2(incrementCounter)
 end
 
 local function StageSelector(incrementCounter)
-	result = stage_selector.StageSelector(incrementCounter)
+	--result = stage_selector.StageSelector(incrementCounter)
 	print( "> Stage: " .. result )	
 	return result
 end
@@ -172,14 +184,14 @@ local menuOpcion={
 	 ,{"Stage selector  :",false,""}
 	 ,{"Hitboxes        :",false,""}
  	 ,{"Scrolling Input :",false,""}
- 	 ,{"Joystick Input  :",false,""}
+ 	 ,{"Fightstick      :",false,""}
 }
 
 
 local menuEstatico={
 			    cabecera	= {"-- MENU OPTIONS --"}
-			 ,  pie		= {"MANCO Training Street Fighter 2 v2.0","for Fightcade","Credits: intiMarqo / Pof / Yacsha","Sep.2021"}
-			 ,  titulo	= "MANCO Training"
+			 ,  pie		= { strMainName1, strMainName2, strCredits, strFecha}
+			 ,  titulo	= strShortTittle
 }
 
 -- Menu functions
@@ -212,6 +224,8 @@ local function LoadVisualMenuOptions()
 	for i=1, #menuOpcion do
 		 menuOpcion[i][3] = MenuExecute( i, 0 )
 	end
+
+	print( "Press -P1 Coin- for show menu - " .. menuEstatico.titulo )
 end
 
 local function menuHabilitar()
@@ -282,19 +296,19 @@ local function ShowVisualMenu()
 	local width,height = emu.screenwidth() ,emu.screenheight()
 	
 	menuHabilitar()
-	
+	--[[
 	if MenuShowFirstTime then
 		-- show a help text to get the menu, only the first time the menu is invoked
 		x = width/15
 		y = height/21	
-		texto = "Press -P1 Coin- for show menu - " .. menuEstatico.titulo
+		--texto = "Press -P1 Coin- for show menu - " .. menuEstatico.titulo		
 		gui.text(( x - (string.len(texto)/2)), y, texto)
-	else
+	else ]]--
 		-- Show Title
 		x = width/2
 		y = height/21
 		gui.text(( x - 4*(string.len(menuEstatico.titulo)/2)), y , menuEstatico.titulo)
-	end 	
+	--end 	
 	
 	if not menuActivo then 
 		return 
@@ -358,8 +372,8 @@ local function ShowMainMenu()
 	
 	current_menu = 0
 
-	print("MANCO Training Street Fighter 2 for Fightcade2 v2.0")
-	print("-- Credits: Intimarqo / Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac --")
+	print(strMainName1 .. " " .. strMainName2)
+	print( "-- " .. strCredits .. " - Tutorial: youtu.be/sAx-r1c24Ac --")
 	print("(Alt+1): Toggle Training Mode on/off")
 	print("(Alt+2): Lock Actions (Candado Training)")
 	print("(Alt+3): Macro Actions")
@@ -373,8 +387,8 @@ local function ShowSubmenu1()
 	
 	current_menu = 1
 
-	print("MANCO Training Street Fighter 2 for Fightcade2 v2.0")
-	print("-- Credits: Intimarqo / Pof / Yacsha - Tutorial: youtu.be/sAx-r1c24Ac --")
+	print(strMainName1 .. " " .. strMainName2)
+	print( "-- " .. strCredits .. " - Tutorial: youtu.be/sAx-r1c24Ac --")
 	print("(Alt+1): Toggle Background Stage Selector")
 	print("(Alt+2): Display/Hide Hitboxes")
 	print("(Alt+3): Display/Hide Scrolling Input")
@@ -449,7 +463,7 @@ while true do
 		training.training_logic()
 
 		-- Toggle background stage
-		stage_selector.select_background_stage()
+		--stage_selector.select_background_stage()
 
 		-- ST HUD
 		sf2hud.render_hud()
