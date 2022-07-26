@@ -306,7 +306,7 @@ local function ShowVisualMenu()
 	else ]]--
 		-- Show Title
 		x = width/2
-		y = height/21
+		y = height/21+1
 		gui.text(( x - 4*(string.len(menuEstatico.titulo)/2)), y , menuEstatico.titulo)
 	--end 	
 	
