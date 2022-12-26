@@ -85,10 +85,13 @@ local gd = require "gd"
 
 local dataInputsButtonsPlayer = {}
 local dataInputsStickPlayer = {}
-local width,height = emu.screenwidth() ,emu.screenheight()
-
+local width
+local height
 local color1 = 0x13389780
 local color2 = 0X00000080
+
+-- init is executed only 1 time
+local bInitHasBeenInitialized = false
 
 ----------------------------------------------------------------------------------------------------
 -- image-string conversion functions
@@ -101,7 +104,12 @@ local function hexdump_to_string(hexdump)
 	return str
 end
 
-local function init()
+local function init()	
+
+	-- Fixes bug that does not calculate the width and height correctly, when the lua is activated from the command line
+	-- For this, init must be executed after calling emu.register
+	width = emu.screenwidth() 
+	height = emu.screenheight()
 
 	for nFightstick = 1, 2 do
 		-- Read Images
@@ -150,12 +158,22 @@ local function init()
 	end
 end
 
-init()
+--init()
+
+
 
 ----------------------------------------------------------------------------------------------------
 -- Show Fightstick in Visual mode
 local function Fightstick_Visual_Show( nFightstick )
 
+	-- init is executed only 1 time
+	if bInitHasBeenInitialized==false then
+		-- Fixes bug that does not calculate the width and height correctly, when the lua is activated from the command line
+		-- For this, init must be executed after calling emu.register
+		init()
+		bInitHasBeenInitialized = true
+	end
+	
 	-- Display stick
 	for i,dataInputs in pairs(dataInputsStickPlayer) do -- dataInputsPlayer Array
 
