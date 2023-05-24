@@ -79,7 +79,7 @@ local img_stick_back = {}
 local img_stick_center = {}
 local img_stick = {}
 
-local FightstickDisplaySelector = 1 -- Default value
+local FightstickDisplaySelector = 0 -- Default value
 
 local gd = require "gd"
 

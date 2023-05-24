@@ -291,11 +291,38 @@ local function dibujaMenu()
 		
 end
 
+----------------------------------------------------------------------------------------------------
+--Load Lua Arguments
+----------------------------------------------------------------------------------------------------
+local bShowVisualMenu = true
+
+local arg = {...}
+
+-- Fightstick input display: Default value from arg[1]
+if arg[1]~=nil then
+	fightstick_input.EnableFightstickDisplay( arg[1] ) 	
+end
+
+-- Enable or disabled 'Show menu when holding down the coin button'
+if arg[2]~=nil then
+	bShowVisualMenu = arg[2]
+end
+
+-- Random Selected Stage: true = Random, false = Disabled
+if arg[3]~=nil then
+
+	if arg[3] then
+		incrementCounter = 1 -- Random Selected Stage
+	else
+		incrementCounter = 0 -- Selected Stage Disabled
+	end
+
+	stage_selector.StageSelector(incrementCounter)
+end
+
 local function ShowVisualMenu()
 
 	local width,height = emu.screenwidth() ,emu.screenheight()
-	
-	menuHabilitar()
 	--[[
 	if MenuShowFirstTime then
 		-- show a help text to get the menu, only the first time the menu is invoked
@@ -309,6 +336,14 @@ local function ShowVisualMenu()
 		y = height/21+1
 		gui.text(( x - 4*(string.len(menuEstatico.titulo)/2)), y , menuEstatico.titulo)
 	--end 	
+
+	-- Enable or disabled 'Show menu when holding down the coin button'
+	if bShowVisualMenu then
+		menuHabilitar()
+	else
+		return
+	end
+	
 	
 	if not menuActivo then 
 		return 
@@ -361,6 +396,7 @@ local function ShowVisualMenu()
 	end
 	
 end
+
 ----------------------------------------------------------------------------------------------------
 --Lua Console Menu
 ----------------------------------------------------------------------------------------------------
